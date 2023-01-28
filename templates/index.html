@@ -15,7 +15,12 @@
 </ul>
 <ol class="list">
     {% for theme in themes %}
-    <li class="list">{{theme}}</li>
+    <li class="list">
+    {% for themes_part in theme %}
+        <p>{{themes_part}}</p>
+    {% endfor %}
+        <hr>
+    </li>
     {% endfor %}
 </ol>
 </body>
