@@ -43,7 +43,10 @@ footer {
 }
 
 .list{
-    margin:7px;
+    padding-top:5px;
+    margin:10px;
+    border-radius:15px;
+    background-color:rgb(230,230,230);
 }
 
 input{

@@ -1,12 +1,13 @@
 from flask import Flask, render_template, request
 import numpy as np
+
 import requests
 import sqlite3
 import re
 
 # Запись в базу
 def fill_db(self):
-    token = '***'
+    token = 'vk1.a.DvFwxnnXwlZGLOh3qVFJv8GGHh81GZTIiBvJbuj7HNoa3EJjymQGXbu2AiC0bSVrmQtMf66eMlTpC-AdqRXdouGsoSpA2iROL8twcZ8K_fg0p4YIs3ui9rRJh2cwnYr2swvLIrnEXaDCzqG7w-vygbH4RQByShQO8PC2wIc0Z03C84lj86iQ1R9Ca0xbZzoVcanQlfm7Zx5F7BXPxZVpRg&expires_in=0&user_id=207317159'
 
     count = 100
     group_name = 'jumoreski'
