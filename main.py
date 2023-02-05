@@ -15,45 +15,58 @@ def fill_db():
 
     conn = sqlite3.connect('base.sqlite')
     cursor = conn.cursor()
+    try:
+        cursor.execute('''
+                    select * from articles 
+                    where first = True 
+                    order by id desc 
+                    limit 1;
+                    ''')
+        print('alright')
+    except:
+        cursor.execute('''
+                create table articles (
+                id integer primary key,
+                text text,
+                parse_date date DEFAULT DATE('now'),
+                first boolean DEFAULT False
+                );
+        ''')
+        conn.commit()
+        print('not alright')
+    finally:
+        is_first = True
+        first = cursor.fetchall()
+        if first == []:
+            first = [(0,'',0)]
 
-    is_first = True
-    cursor.execute('''
-            select * from articles 
-            where first = True 
-            order by id desc 
-            limit 1;
-            ''')
-    first = cursor.fetchall()
-    if first == []:
-        first = [(0,'',0)]
+        # Парсинг страницы вк
+        req = requests.get(url)
+        articles = []
+        for i in range(count):
+            article = req.json()['response']['items'][i]
+            if 'is_pinned' not in article.keys():
+                articles.append(article['text'])
 
-    # Парсинг страницы вк
-    req = requests.get(url)
-    articles = []
-    for i in range(count):
-        article = req.json()['response']['items'][i]
-        if 'is_pinned' not in article.keys():
-            articles.append(article['text'])
+        for article in articles:
 
-    for article in articles:
+            if len(article) > 0:
+                if article != first[0][1]:
 
-        if len(article) > 0:
-            if article != first[0][1]:
-
-                if is_first:
-                    cursor.execute('''
-                        insert into articles (text,first) values (?,?)
-                        '''
-                        , (article,True))
-                    is_first = False
+                    if is_first:
+                        cursor.execute('''
+                            insert into articles (text,first) values (?,?)
+                            '''
+                            , (article,True))
+                        is_first = False
+                    else:
+                        cursor.execute('''
+                            insert into articles (text) values (?)
+                            ''', (article, ))
                 else:
-                    cursor.execute('''
-                        insert into articles (text) values (?)
-                        ''', (article, ))
-            else:
-                break
-    # Подтверждение изменений
-    conn.commit()
+                    break
+        # Подтверждение изменений
+        conn.commit()
 
 
 # Отчистка базы
